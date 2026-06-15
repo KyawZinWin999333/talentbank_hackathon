@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Filter, Send, ShieldCheck, Check, 
-  Layers, Terminal, X 
+  Layers, Terminal, X, Menu 
 } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 
@@ -70,6 +70,7 @@ const MOCK_SIGNALS = [
 ];
 
 export default function EmployerDashboard({ setCurrentView }) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [empTab, setEmpTab] = useState(() => {
     return localStorage.getItem('careerdna_employer_tab') || 'discovery';
   });
@@ -147,48 +148,101 @@ export default function EmployerDashboard({ setCurrentView }) {
     <div className="min-h-screen bg-[#0B0F12] text-[#F7F9FA] flex flex-col font-sans">
       
       {/* Top Header Section */}
-      <header className="w-full bg-[#161B22] border-b border-[#1E262F] px-6 py-4 sticky top-0 z-40 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-6">
-          <BrandLogo />
-          {/* Tab Controller Links */}
-          <div className="flex gap-4">
+      <header className="w-full bg-[#161B22] border-b border-[#1E262F] px-6 py-4 sticky top-0 z-40 flex items-center justify-between">
+        {/* Desktop Header Layout */}
+        <div className="hidden md:flex items-center justify-between w-full">
+          <div className="flex items-center gap-6">
+            <BrandLogo />
+            {/* Tab Controller Links */}
+            <div className="flex gap-4">
+              <button
+                type="button"
+                onClick={() => setEmpTab('discovery')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  empTab === 'discovery'
+                    ? 'bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/20'
+                    : 'text-[#8A99A5] hover:text-[#F7F9FA]'
+                }`}
+              >
+                Find Candidates
+              </button>
+              <button
+                type="button"
+                onClick={() => setEmpTab('postings')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  empTab === 'postings'
+                    ? 'bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/20'
+                    : 'text-[#8A99A5] hover:text-[#F7F9FA]'
+                }`}
+              >
+                Manage Postings
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <span className="text-[10px] font-mono text-[#8A99A5] bg-[#0B0F12] px-3 py-1 rounded border border-[#1E262F]">
+              Recruiter Dashboard
+            </span>
             <button
-              type="button"
-              onClick={() => setEmpTab('discovery')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                empTab === 'discovery'
-                  ? 'bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/20'
-                  : 'text-[#8A99A5] hover:text-[#F7F9FA]'
-              }`}
+              onClick={() => setCurrentView('gateway')}
+              className="px-4 py-2 bg-[#1E262F] hover:bg-[#FF5252] text-[#8A99A5] hover:text-[#F7F9FA] font-bold rounded-lg text-xs transition-all"
             >
-              Find Candidates
-            </button>
-            <button
-              type="button"
-              onClick={() => setEmpTab('postings')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                empTab === 'postings'
-                  ? 'bg-[#00E5FF]/15 text-[#00E5FF] border border-[#00E5FF]/20'
-                  : 'text-[#8A99A5] hover:text-[#F7F9FA]'
-              }`}
-            >
-              Manage Postings
+              Exit Dashboard
             </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <span className="text-[10px] font-mono text-[#8A99A5] bg-[#0B0F12] px-3 py-1 rounded border border-[#1E262F]">
-            Recruiter Dashboard
-          </span>
+        {/* Responsive Mobile Header Layout */}
+        <div className="md:hidden flex items-center justify-between w-full">
+          <BrandLogo />
           <button
-            onClick={() => setCurrentView('gateway')}
-            className="px-4 py-2 bg-[#1E262F] hover:bg-[#FF5252] text-[#8A99A5] hover:text-[#F7F9FA] font-bold rounded-lg text-xs transition-all"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="p-2 bg-[#1E262F] border border-[#1E262F] rounded-lg text-[#8A99A5] hover:text-[#F7F9FA] transition-all focus:outline-none"
           >
-            Exit Dashboard
+            {isMobileMenuOpen ? <X className="w-5 h-5 text-[#FFD369]" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </header>
+
+      {/* Mobile Menu Dropdown Panel */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden bg-[#161B22] border-b border-[#1E262F] overflow-hidden flex flex-col p-4 space-y-4 z-30 sticky top-[60px] w-full"
+          >
+            <nav className="flex flex-col space-y-2 text-sm font-semibold">
+              <button
+                onClick={() => { setEmpTab('discovery'); setIsMobileMenuOpen(false); }}
+                className={`text-left py-2 px-3 rounded-lg transition-colors ${empTab === 'discovery' ? 'text-[#00E5FF] bg-[#1E262F]/50' : 'text-[#8A99A5] hover:text-[#F7F9FA]'}`}
+              >
+                Find Candidates
+              </button>
+              <button
+                onClick={() => { setEmpTab('postings'); setIsMobileMenuOpen(false); }}
+                className={`text-left py-2 px-3 rounded-lg transition-colors ${empTab === 'postings' ? 'text-[#00E5FF] bg-[#1E262F]/50' : 'text-[#8A99A5] hover:text-[#F7F9FA]'}`}
+              >
+                Manage Postings
+              </button>
+            </nav>
+            <div className="flex items-center justify-between pt-2 border-t border-[#1E262F]/60">
+              <span className="text-[9px] font-mono text-[#8A99A5] bg-[#0B0F12] px-2 py-0.5 rounded border border-[#1E262F]">
+                Recruiter Dashboard
+              </span>
+              <button
+                onClick={() => { setCurrentView('gateway'); setIsMobileMenuOpen(false); }}
+                className="px-3 py-1.5 bg-[#1E262F] hover:bg-[#FF5252] text-[#8A99A5] hover:text-[#F7F9FA] font-bold rounded-lg text-[10px] transition-all"
+              >
+                Exit Dashboard
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Panel Content */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8">

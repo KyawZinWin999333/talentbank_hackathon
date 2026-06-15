@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, AlertTriangle, ShieldCheck, ChevronRight, Cpu, FileText, GitBranch, Terminal, Shield, ArrowUpRight } from 'lucide-react';
+import { Search, X, AlertTriangle, ShieldCheck, ChevronRight, Cpu, FileText, GitBranch, Terminal, Shield, ArrowUpRight, Menu } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 
 // Mock Job Board Data
@@ -241,6 +241,7 @@ const DnaLedgerVisualizer = () => {
 
 
 export default function GatewayPortal({ setCurrentView }) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState(null);
   const [selectedJob, setSelectedJob] = useState(null);
@@ -290,7 +291,9 @@ export default function GatewayPortal({ setCurrentView }) {
       {/* Top Navigation Bar */}
       <header className="w-full bg-[#161B22]/80 backdrop-blur-md border-b border-[#1E262F] sticky top-0 z-40 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
         <BrandLogo />
-        <nav className="flex items-center gap-4 md:gap-8 text-xs md:text-sm font-semibold">
+        
+        {/* Desktop Tabs */}
+        <nav className="hidden md:flex items-center gap-4 md:gap-8 text-xs md:text-sm font-semibold">
           <button
             onClick={() => setActiveSubTab('home')}
             className={`transition-colors py-1 ${activeSubTab === 'home' ? 'text-[#00E5FF] border-b-2 border-[#00E5FF]' : 'text-[#8A99A5] hover:text-[#F7F9FA]'}`}
@@ -310,13 +313,63 @@ export default function GatewayPortal({ setCurrentView }) {
             Features
           </button>
         </nav>
+
+        {/* Desktop Access Button */}
         <button
           onClick={() => setCurrentView('auth_modal')}
-          className="px-3 md:px-5 py-2 md:py-2.5 bg-[#00E5FF] text-[#0B0F12] font-extrabold rounded-xl hover:bg-[#00E5FF]/90 transition-all text-[10px] md:text-xs uppercase tracking-wider font-mono shadow-[0_4px_20px_rgba(0,229,255,0.25)] hover:scale-[1.02]"
+          className="hidden md:block px-3 md:px-5 py-2 md:py-2.5 bg-[#00E5FF] text-[#0B0F12] font-extrabold rounded-xl hover:bg-[#00E5FF]/90 transition-all text-[10px] md:text-xs uppercase tracking-wider font-mono shadow-[0_4px_20px_rgba(0,229,255,0.25)] hover:scale-[1.02]"
         >
           Access Console
         </button>
+
+        {/* Responsive Mobile Burger Toggle */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="md:hidden p-2 bg-[#1E262F] border border-[#1E262F] rounded-lg text-[#8A99A5] hover:text-[#F7F9FA] transition-all focus:outline-none"
+        >
+          {isMobileMenuOpen ? <X className="w-5 h-5 text-[#FFD369]" /> : <Menu className="w-5 h-5" />}
+        </button>
       </header>
+
+      {/* Mobile Menu Dropdown Panel */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden bg-[#161B22] border-b border-[#1E262F] overflow-hidden flex flex-col p-4 space-y-4 z-30 sticky top-[60px] w-full"
+          >
+            <nav className="flex flex-col space-y-2 text-sm font-semibold">
+              <button
+                onClick={() => { setActiveSubTab('home'); setIsMobileMenuOpen(false); }}
+                className={`text-left py-2 px-3 rounded-lg transition-colors ${activeSubTab === 'home' ? 'text-[#00E5FF] bg-[#1E262F]/50' : 'text-[#8A99A5] hover:text-[#F7F9FA]'}`}
+              >
+                Home
+              </button>
+              <button
+                onClick={() => { setActiveSubTab('about'); setIsMobileMenuOpen(false); }}
+                className={`text-left py-2 px-3 rounded-lg transition-colors ${activeSubTab === 'about' ? 'text-[#00E5FF] bg-[#1E262F]/50' : 'text-[#8A99A5] hover:text-[#F7F9FA]'}`}
+              >
+                About
+              </button>
+              <button
+                onClick={() => { setActiveSubTab('features'); setIsMobileMenuOpen(false); }}
+                className={`text-left py-2 px-3 rounded-lg transition-colors ${activeSubTab === 'features' ? 'text-[#00E5FF] bg-[#1E262F]/50' : 'text-[#8A99A5] hover:text-[#F7F9FA]'}`}
+              >
+                Features
+              </button>
+            </nav>
+            <button
+              onClick={() => { setCurrentView('auth_modal'); setIsMobileMenuOpen(false); }}
+              className="w-full py-3 bg-[#00E5FF] text-[#0B0F12] font-extrabold rounded-xl hover:bg-[#00E5FF]/90 transition-all text-xs uppercase tracking-wider font-mono shadow-md text-center"
+            >
+              Access Console
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 space-y-16">
