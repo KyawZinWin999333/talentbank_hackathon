@@ -530,13 +530,45 @@ export default function CandidateDashboard({ setCurrentView }) {
 
         {/* TAB B: CAREER PATH NAVIGATOR */}
         {candTab === 'navigator' && (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-in fade-in duration-300">
             {/* Top Warning Banner */}
             <div className="p-4 bg-[#FF5252]/10 border border-[#FF5252]/30 rounded-xl flex gap-3 items-center">
               <AlertTriangle className="w-5 h-5 text-[#FF5252] flex-shrink-0 animate-pulse" />
               <p className="text-xs font-bold text-[#F7F9FA]">
                 Path Navigator Active: Explore career paths and see which skills you need to learn.
               </p>
+            </div>
+
+            {/* Path Selection Bar */}
+            <div className="flex flex-wrap items-center gap-3 p-3 bg-[#161B22] border border-[#1E262F] rounded-xl">
+              <span className="text-[10px] font-mono font-bold text-[#8A99A5] uppercase px-1">Select Active Path:</span>
+              {[
+                { id: 'mlops', name: 'Data & AI Engineer (MLOps)', color: '#00E5FF' },
+                { id: 'systems', name: 'Backend Systems Lead', color: '#FFD369' },
+                { id: 'fullstack', name: 'Full-Stack Developer', color: '#F7F9FA' }
+              ].map((path) => (
+                <button
+                  key={path.id}
+                  onClick={() => {
+                    setSelectedPathNode(path.id);
+                    if (path.id === 'mlops') setSelectedStageNode(STAGE_DETAILS.ingestion);
+                    else if (path.id === 'systems') setSelectedStageNode(STAGE_DETAILS.sockets);
+                    else if (path.id === 'fullstack') setSelectedStageNode(STAGE_DETAILS.apis);
+                  }}
+                  className={`px-3 py-1.5 border rounded-lg text-xs font-semibold font-mono transition-all duration-300 ${
+                    selectedPathNode === path.id
+                      ? `text-white border-transparent`
+                      : 'border-[#1E262F] text-[#8A99A5] hover:text-white'
+                  }`}
+                  style={{
+                    backgroundColor: selectedPathNode === path.id ? path.color : 'transparent',
+                    color: selectedPathNode === path.id ? '#0B0F12' : undefined,
+                    boxShadow: selectedPathNode === path.id ? `0 0 12px ${path.color}60` : undefined
+                  }}
+                >
+                  {path.name}
+                </button>
+              ))}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -559,34 +591,40 @@ export default function CandidateDashboard({ setCurrentView }) {
                     </defs>
                     <rect width="100%" height="100%" fill="url(#blueprint-grid)" rx="8" />
 
-                    {/* Connection Lines */}
+                    {/* Connection Lines with Animated Flowing Neon Packets */}
                     {/* Path 1: MLOps (Top) */}
-                    <path
+                    <motion.path
                       d="M 50 120 C 100 60, 120 60, 170 60 H 290 H 410"
                       stroke={selectedPathNode === 'mlops' ? '#00E5FF' : '#1E262F'}
-                      strokeWidth={selectedPathNode === 'mlops' ? "3" : "1.5"}
+                      strokeWidth={selectedPathNode === 'mlops' ? "2.5" : "1"}
                       strokeOpacity={selectedPathNode === 'mlops' ? "1" : "0.15"}
-                      strokeDasharray={selectedPathNode === 'mlops' ? "none" : "3 3"}
+                      strokeDasharray={selectedPathNode === 'mlops' ? "6, 6" : "none"}
+                      animate={selectedPathNode === 'mlops' ? { strokeDashoffset: [0, -24] } : {}}
+                      transition={{ repeat: Infinity, ease: "linear", duration: 1.5 }}
                       className="transition-all duration-300"
                     />
 
                     {/* Path 2: Systems (Middle) */}
-                    <path
+                    <motion.path
                       d="M 50 120 H 410"
                       stroke={selectedPathNode === 'systems' ? '#FFD369' : '#1E262F'}
-                      strokeWidth={selectedPathNode === 'systems' ? "3" : "1.5"}
+                      strokeWidth={selectedPathNode === 'systems' ? "2.5" : "1"}
                       strokeOpacity={selectedPathNode === 'systems' ? "1" : "0.15"}
-                      strokeDasharray={selectedPathNode === 'systems' ? "none" : "3 3"}
+                      strokeDasharray={selectedPathNode === 'systems' ? "6, 6" : "none"}
+                      animate={selectedPathNode === 'systems' ? { strokeDashoffset: [0, -24] } : {}}
+                      transition={{ repeat: Infinity, ease: "linear", duration: 1.5 }}
                       className="transition-all duration-300"
                     />
 
                     {/* Path 3: Full-Stack (Bottom) */}
-                    <path
+                    <motion.path
                       d="M 50 120 C 100 180, 120 180, 170 180 H 290 H 410"
                       stroke={selectedPathNode === 'fullstack' ? '#F7F9FA' : '#1E262F'}
-                      strokeWidth={selectedPathNode === 'fullstack' ? "3" : "1.5"}
+                      strokeWidth={selectedPathNode === 'fullstack' ? "2.5" : "1"}
                       strokeOpacity={selectedPathNode === 'fullstack' ? "1" : "0.15"}
-                      strokeDasharray={selectedPathNode === 'fullstack' ? "none" : "3 3"}
+                      strokeDasharray={selectedPathNode === 'fullstack' ? "6, 6" : "none"}
+                      animate={selectedPathNode === 'fullstack' ? { strokeDashoffset: [0, -24] } : {}}
+                      transition={{ repeat: Infinity, ease: "linear", duration: 1.5 }}
                       className="transition-all duration-300"
                     />
 
@@ -598,63 +636,100 @@ export default function CandidateDashboard({ setCurrentView }) {
                     </g>
 
                     {/* ----------------- MLOPS PATH NODES ----------------- */}
-                    {/* Stage 1 */}
+                    {/* Stage 1 (Verified) */}
                     <g className="cursor-pointer" onClick={() => { setSelectedPathNode('mlops'); setSelectedStageNode(STAGE_DETAILS.ingestion); }}>
-                      <circle cx="170" cy="60" r="8" fill="#161B22" stroke={selectedPathNode === 'mlops' ? '#00E5FF' : '#1E262F'} strokeWidth="2" />
-                      {selectedPathNode === 'mlops' && <circle cx="170" cy="60" r="3" fill="#00E5FF" />}
-                      <text x="170" y="48" fill={selectedPathNode === 'mlops' ? '#00E5FF' : '#8A99A5'} opacity={selectedPathNode === 'mlops' ? 1 : 0.25} fontSize="7" fontWeight="bold" fontFamily="monospace" textAnchor="middle">PIPELINES</text>
+                      <circle cx="170" cy="60" r="9" fill="#161B22" stroke={selectedPathNode === 'mlops' ? '#00E5FF' : '#1E262F'} strokeWidth="2" />
+                      {selectedPathNode === 'mlops' && (
+                        <motion.circle cx="170" cy="60" r="3.5" fill="#00E5FF" animate={{ scale: [1, 1.4, 1] }} transition={{ repeat: Infinity, duration: 2 }} />
+                      )}
+                      {/* Rotating Green Halo */}
+                      <motion.circle cx="170" cy="60" r="13" stroke="#10B981" strokeWidth="1.25" strokeDasharray="3 3" fill="transparent" animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 6, ease: "linear" }} />
+                      {/* Green Tick Check Badge */}
+                      <circle cx="177" cy="53" r="3.5" fill="#10B981" />
+                      <path d="M 175 53 L 176.5 54.5 L 179 52" stroke="#0B0F12" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                      <text x="170" y="44" fill={selectedPathNode === 'mlops' ? '#00E5FF' : '#8A99A5'} opacity={selectedPathNode === 'mlops' ? 1 : 0.3} fontSize="7" fontWeight="bold" fontFamily="monospace" textAnchor="middle">PIPELINES</text>
                     </g>
-                    {/* Stage 2 */}
+                    {/* Stage 2 (Verified) */}
                     <g className="cursor-pointer" onClick={() => { setSelectedPathNode('mlops'); setSelectedStageNode(STAGE_DETAILS.registry); }}>
-                      <circle cx="290" cy="60" r="8" fill="#161B22" stroke={selectedPathNode === 'mlops' ? '#00E5FF' : '#1E262F'} strokeWidth="2" />
-                      {selectedPathNode === 'mlops' && <circle cx="290" cy="60" r="3" fill="#00E5FF" />}
-                      <text x="290" y="48" fill={selectedPathNode === 'mlops' ? '#00E5FF' : '#8A99A5'} opacity={selectedPathNode === 'mlops' ? 1 : 0.25} fontSize="7" fontWeight="bold" fontFamily="monospace" textAnchor="middle">VERSIONS</text>
+                      <circle cx="290" cy="60" r="9" fill="#161B22" stroke={selectedPathNode === 'mlops' ? '#00E5FF' : '#1E262F'} strokeWidth="2" />
+                      {selectedPathNode === 'mlops' && (
+                        <motion.circle cx="290" cy="60" r="3.5" fill="#00E5FF" animate={{ scale: [1, 1.4, 1] }} transition={{ repeat: Infinity, duration: 2 }} />
+                      )}
+                      {/* Rotating Green Halo */}
+                      <motion.circle cx="290" cy="60" r="13" stroke="#10B981" strokeWidth="1.25" strokeDasharray="3 3" fill="transparent" animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 6, ease: "linear" }} />
+                      {/* Green Tick Check Badge */}
+                      <circle cx="297" cy="53" r="3.5" fill="#10B981" />
+                      <path d="M 295 53 L 296.5 54.5 L 299 52" stroke="#0B0F12" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                      <text x="290" y="44" fill={selectedPathNode === 'mlops' ? '#00E5FF' : '#8A99A5'} opacity={selectedPathNode === 'mlops' ? 1 : 0.3} fontSize="7" fontWeight="bold" fontFamily="monospace" textAnchor="middle">VERSIONS</text>
                     </g>
-                    {/* Stage 3 (Destination) */}
+                    {/* Stage 3 (Destination - Locked) */}
                     <g className="cursor-pointer" onClick={() => { setSelectedPathNode('mlops'); setSelectedStageNode(STAGE_DETAILS.mlops); }}>
                       <circle cx="410" cy="60" r="12" fill={selectedPathNode === 'mlops' ? '#00E5FF' : '#161B22'} stroke="#00E5FF" strokeWidth="2.5" />
                       <text x="410" y="63" fill={selectedPathNode === 'mlops' ? '#0B0F12' : '#00E5FF'} fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="monospace">ML</text>
-                      <text x="410" y="82" fill={selectedPathNode === 'mlops' ? '#F7F9FA' : '#8A99A5'} opacity={selectedPathNode === 'mlops' ? 1 : 0.3} fontSize="7.5" fontWeight="bold" textAnchor="middle">Data & AI</text>
+                      <text x="410" y="44" fill={selectedPathNode === 'mlops' ? '#F7F9FA' : '#8A99A5'} opacity={selectedPathNode === 'mlops' ? 1 : 0.3} fontSize="7.5" fontWeight="bold" textAnchor="middle">Data & AI</text>
                     </g>
 
                     {/* ----------------- SYSTEMS PATH NODES ----------------- */}
-                    {/* Stage 1 */}
+                    {/* Stage 1 (Verified) */}
                     <g className="cursor-pointer" onClick={() => { setSelectedPathNode('systems'); setSelectedStageNode(STAGE_DETAILS.sockets); }}>
-                      <circle cx="170" cy="120" r="8" fill="#161B22" stroke={selectedPathNode === 'systems' ? '#FFD369' : '#1E262F'} strokeWidth="2" />
-                      {selectedPathNode === 'systems' && <circle cx="170" cy="120" r="3" fill="#FFD369" />}
-                      <text x="170" y="140" fill={selectedPathNode === 'systems' ? '#FFD369' : '#8A99A5'} opacity={selectedPathNode === 'systems' ? 1 : 0.25} fontSize="7" fontWeight="bold" fontFamily="monospace" textAnchor="middle">NETWORKS</text>
+                      <circle cx="170" cy="120" r="9" fill="#161B22" stroke={selectedPathNode === 'systems' ? '#FFD369' : '#1E262F'} strokeWidth="2" />
+                      {selectedPathNode === 'systems' && (
+                        <motion.circle cx="170" cy="120" r="3.5" fill="#FFD369" animate={{ scale: [1, 1.4, 1] }} transition={{ repeat: Infinity, duration: 2 }} />
+                      )}
+                      {/* Rotating Green Halo */}
+                      <motion.circle cx="170" cy="120" r="13" stroke="#10B981" strokeWidth="1.25" strokeDasharray="3 3" fill="transparent" animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 6, ease: "linear" }} />
+                      {/* Green Tick Check Badge */}
+                      <circle cx="177" cy="113" r="3.5" fill="#10B981" />
+                      <path d="M 175 113 L 176.5 114.5 L 179 112" stroke="#0B0F12" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                      <text x="170" y="104" fill={selectedPathNode === 'systems' ? '#FFD369' : '#8A99A5'} opacity={selectedPathNode === 'systems' ? 1 : 0.3} fontSize="7" fontWeight="bold" fontFamily="monospace" textAnchor="middle">NETWORKS</text>
                     </g>
-                    {/* Stage 2 */}
+                    {/* Stage 2 (Verified) */}
                     <g className="cursor-pointer" onClick={() => { setSelectedPathNode('systems'); setSelectedStageNode(STAGE_DETAILS.concurrency); }}>
-                      <circle cx="290" cy="120" r="8" fill="#161B22" stroke={selectedPathNode === 'systems' ? '#FFD369' : '#1E262F'} strokeWidth="2" />
-                      {selectedPathNode === 'systems' && <circle cx="290" cy="120" r="3" fill="#FFD369" />}
-                      <text x="290" y="140" fill={selectedPathNode === 'systems' ? '#FFD369' : '#8A99A5'} opacity={selectedPathNode === 'systems' ? 1 : 0.25} fontSize="7" fontWeight="bold" fontFamily="monospace" textAnchor="middle">THREADS</text>
+                      <circle cx="290" cy="120" r="9" fill="#161B22" stroke={selectedPathNode === 'systems' ? '#FFD369' : '#1E262F'} strokeWidth="2" />
+                      {selectedPathNode === 'systems' && (
+                        <motion.circle cx="290" cy="120" r="3.5" fill="#FFD369" animate={{ scale: [1, 1.4, 1] }} transition={{ repeat: Infinity, duration: 2 }} />
+                      )}
+                      {/* Rotating Green Halo */}
+                      <motion.circle cx="290" cy="120" r="13" stroke="#10B981" strokeWidth="1.25" strokeDasharray="3 3" fill="transparent" animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 6, ease: "linear" }} />
+                      {/* Green Tick Check Badge */}
+                      <circle cx="297" cy="113" r="3.5" fill="#10B981" />
+                      <path d="M 295 113 L 296.5 114.5 L 299 112" stroke="#0B0F12" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                      <text x="290" y="104" fill={selectedPathNode === 'systems' ? '#FFD369' : '#8A99A5'} opacity={selectedPathNode === 'systems' ? 1 : 0.3} fontSize="7" fontWeight="bold" fontFamily="monospace" textAnchor="middle">THREADS</text>
                     </g>
-                    {/* Stage 3 (Destination) */}
+                    {/* Stage 3 (Destination - Locked) */}
                     <g className="cursor-pointer" onClick={() => { setSelectedPathNode('systems'); setSelectedStageNode(STAGE_DETAILS.systems); }}>
                       <circle cx="410" cy="120" r="12" fill={selectedPathNode === 'systems' ? '#FFD369' : '#161B22'} stroke="#FFD369" strokeWidth="2.5" />
                       <text x="410" y="123" fill={selectedPathNode === 'systems' ? '#0B0F12' : '#FFD369'} fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="monospace">DS</text>
-                      <text x="410" y="142" fill={selectedPathNode === 'systems' ? '#F7F9FA' : '#8A99A5'} opacity={selectedPathNode === 'systems' ? 1 : 0.3} fontSize="7.5" fontWeight="bold" textAnchor="middle">Backend Lead</text>
+                      <text x="410" y="104" fill={selectedPathNode === 'systems' ? '#F7F9FA' : '#8A99A5'} opacity={selectedPathNode === 'systems' ? 1 : 0.3} fontSize="7.5" fontWeight="bold" textAnchor="middle">Backend Lead</text>
                     </g>
 
                     {/* ----------------- FULL-STACK PATH NODES ----------------- */}
-                    {/* Stage 1 */}
+                    {/* Stage 1 (Verified) */}
                     <g className="cursor-pointer" onClick={() => { setSelectedPathNode('fullstack'); setSelectedStageNode(STAGE_DETAILS.apis); }}>
-                      <circle cx="170" cy="180" r="8" fill="#161B22" stroke={selectedPathNode === 'fullstack' ? '#F7F9FA' : '#1E262F'} strokeWidth="2" />
-                      {selectedPathNode === 'fullstack' && <circle cx="170" cy="180" r="3" fill="#F7F9FA" />}
-                      <text x="170" y="200" fill={selectedPathNode === 'fullstack' ? '#F7F9FA' : '#8A99A5'} opacity={selectedPathNode === 'fullstack' ? 1 : 0.25} fontSize="7" fontWeight="bold" fontFamily="monospace" textAnchor="middle">APIs</text>
+                      <circle cx="170" cy="180" r="9" fill="#161B22" stroke={selectedPathNode === 'fullstack' ? '#F7F9FA' : '#1E262F'} strokeWidth="2" />
+                      {selectedPathNode === 'fullstack' && (
+                        <motion.circle cx="170" cy="180" r="3.5" fill="#F7F9FA" animate={{ scale: [1, 1.4, 1] }} transition={{ repeat: Infinity, duration: 2 }} />
+                      )}
+                      {/* Rotating Green Halo */}
+                      <motion.circle cx="170" cy="180" r="13" stroke="#10B981" strokeWidth="1.25" strokeDasharray="3 3" fill="transparent" animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 6, ease: "linear" }} />
+                      {/* Green Tick Check Badge */}
+                      <circle cx="177" cy="173" r="3.5" fill="#10B981" />
+                      <path d="M 175 173 L 176.5 174.5 L 179 172" stroke="#0B0F12" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                      <text x="170" y="164" fill={selectedPathNode === 'fullstack' ? '#F7F9FA' : '#8A99A5'} opacity={selectedPathNode === 'fullstack' ? 1 : 0.3} fontSize="7" fontWeight="bold" fontFamily="monospace" textAnchor="middle">APIs</text>
                     </g>
-                    {/* Stage 2 */}
+                    {/* Stage 2 (Locked) */}
                     <g className="cursor-pointer" onClick={() => { setSelectedPathNode('fullstack'); setSelectedStageNode(STAGE_DETAILS.caching); }}>
-                      <circle cx="290" cy="180" r="8" fill="#161B22" stroke={selectedPathNode === 'fullstack' ? '#F7F9FA' : '#1E262F'} strokeWidth="2" />
-                      {selectedPathNode === 'fullstack' && <circle cx="290" cy="180" r="3" fill="#F7F9FA" />}
-                      <text x="290" y="200" fill={selectedPathNode === 'fullstack' ? '#F7F9FA' : '#8A99A5'} opacity={selectedPathNode === 'fullstack' ? 1 : 0.25} fontSize="7" fontWeight="bold" fontFamily="monospace" textAnchor="middle">SPEED</text>
+                      <circle cx="290" cy="180" r="9" fill="#161B22" stroke={selectedPathNode === 'fullstack' ? '#F7F9FA' : '#1E262F'} strokeWidth="2" />
+                      {selectedPathNode === 'fullstack' && (
+                        <motion.circle cx="290" cy="180" r="3.5" fill="#F7F9FA" animate={{ scale: [1, 1.4, 1] }} transition={{ repeat: Infinity, duration: 2 }} />
+                      )}
+                      <text x="290" y="164" fill={selectedPathNode === 'fullstack' ? '#F7F9FA' : '#8A99A5'} opacity={selectedPathNode === 'fullstack' ? 1 : 0.3} fontSize="7" fontWeight="bold" fontFamily="monospace" textAnchor="middle">SPEED</text>
                     </g>
-                    {/* Stage 3 (Destination) */}
+                    {/* Stage 3 (Destination - Locked) */}
                     <g className="cursor-pointer" onClick={() => { setSelectedPathNode('fullstack'); setSelectedStageNode(STAGE_DETAILS.fullstack); }}>
                       <circle cx="410" cy="180" r="12" fill={selectedPathNode === 'fullstack' ? '#F7F9FA' : '#161B22'} stroke="#F7F9FA" strokeWidth="2.5" />
                       <text x="410" y="183" fill={selectedPathNode === 'fullstack' ? '#0B0F12' : '#F7F9FA'} fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="monospace">FS</text>
-                      <text x="410" y="202" fill={selectedPathNode === 'fullstack' ? '#F7F9FA' : '#8A99A5'} opacity={selectedPathNode === 'fullstack' ? 1 : 0.3} fontSize="7.5" fontWeight="bold" textAnchor="middle">Full-Stack</text>
+                      <text x="410" y="164" fill={selectedPathNode === 'fullstack' ? '#F7F9FA' : '#8A99A5'} opacity={selectedPathNode === 'fullstack' ? 1 : 0.3} fontSize="7.5" fontWeight="bold" textAnchor="middle">Full-Stack</text>
                     </g>
                   </svg>
                 </div>
@@ -662,7 +737,18 @@ export default function CandidateDashboard({ setCurrentView }) {
                 {selectedStageNode ? (
                   <div className="mt-4 p-4 bg-[#0B0F12]/80 border border-[#1E262F] rounded-lg animate-in slide-in-from-bottom-2 duration-200">
                     <div className="flex justify-between items-center border-b border-[#1E262F]/60 pb-1.5 mb-2">
-                      <span className="text-xs font-bold text-[#00E5FF] font-mono">{selectedStageNode.name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-[#00E5FF] font-mono">{selectedStageNode.name}</span>
+                        {['Data Pipeline Stage', 'Model Registry Sync Stage', 'Network Socket Tuning Stage', 'High-Concurrency Backbones Stage', 'API Caching Stage'].includes(selectedStageNode.name) ? (
+                          <span className="text-[8px] bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/25 px-1.5 py-0.5 rounded font-mono font-bold">
+                            ✓ VERIFIED
+                          </span>
+                        ) : (
+                          <span className="text-[8px] bg-[#FF5252]/15 text-[#FF5252] border border-[#FF5252]/25 px-1.5 py-0.5 rounded font-mono font-bold">
+                            ⚠️ SUGGESTED
+                          </span>
+                        )}
+                      </div>
                       <button 
                         onClick={() => setSelectedStageNode(null)}
                         className="text-[9px] text-[#FF5252] hover:underline uppercase font-mono"
