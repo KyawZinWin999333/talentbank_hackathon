@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  History as HistoryIcon, Compass, MessageSquare, GitBranch, FileText, 
+  Menu, X, History as HistoryIcon, Compass, MessageSquare, GitBranch, FileText, 
   Terminal, AlertTriangle, Send
 } from 'lucide-react';
 import BrandLogo from './BrandLogo';
@@ -125,6 +125,7 @@ export default function CandidateDashboard({ setCurrentView }) {
   useEffect(() => {
     localStorage.setItem('careerdna_candidate_tab', candTab);
   }, [candTab]);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [selectedPathNode, setSelectedPathNode] = useState('mlops');
   const [selectedStageNode, setSelectedStageNode] = useState(null);
   const [verifyingMilestone, setVerifyingMilestone] = useState({});
@@ -234,8 +235,82 @@ export default function CandidateDashboard({ setCurrentView }) {
   return (
     <div className="min-h-screen bg-[#0B0F12] text-[#F7F9FA] flex flex-col md:flex-row font-sans">
       
-      {/* Fixed Left Navigation Panel */}
-      <aside className="w-full md:w-64 bg-[#161B22] border-b md:border-b-0 md:border-r border-[#1E262F] flex flex-col justify-between flex-shrink-0">
+      {/* Mobile Top Navigation Header */}
+      <div className="md:hidden flex items-center justify-between p-4 bg-[#161B22] border-b border-[#1E262F] sticky top-0 z-50 w-full">
+        <BrandLogo />
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="p-2 bg-[#1E262F] border border-[#1E262F] rounded-lg text-[#8A99A5] hover:text-[#F7F9FA] transition-all focus:outline-none"
+        >
+          {isMobileMenuOpen ? <X className="w-5 h-5 text-[#FFD369]" /> : <Menu className="w-5 h-5" />}
+        </button>
+      </div>
+
+      {/* Mobile Menu Dropdown Panel */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden bg-[#161B22] border-b border-[#1E262F] overflow-hidden flex flex-col justify-between z-40 w-full"
+          >
+            <nav className="p-4 space-y-2">
+              <button
+                onClick={() => { setCandTab('portfolio'); setIsMobileMenuOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold border-l-2 transition-all duration-200 ${
+                  candTab === 'portfolio'
+                    ? 'border-[#00E5FF] bg-[#1E262F]/50 text-[#F7F9FA] rounded-r-xl rounded-l-none'
+                    : 'border-transparent text-[#8A99A5] hover:text-[#F7F9FA]'
+                }`}
+              >
+                <HistoryIcon className="w-4 h-4" />
+                <span>Skills Portfolio</span>
+              </button>
+
+              <button
+                onClick={() => { setCandTab('navigator'); setIsMobileMenuOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold border-l-2 transition-all duration-200 ${
+                  candTab === 'navigator'
+                    ? 'border-[#00E5FF] bg-[#1E262F]/50 text-[#F7F9FA] rounded-r-xl rounded-l-none'
+                    : 'border-transparent text-[#8A99A5] hover:text-[#F7F9FA]'
+                }`}
+              >
+                <Compass className="w-4 h-4" />
+                <span>Path Navigator</span>
+              </button>
+
+              <button
+                onClick={() => { setCandTab('ai_coach'); setIsMobileMenuOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-bold border-l-2 transition-all duration-200 ${
+                  candTab === 'ai_coach'
+                    ? 'border-[#00E5FF] bg-[#1E262F]/50 text-[#F7F9FA] rounded-r-xl rounded-l-none'
+                    : 'border-transparent text-[#8A99A5] hover:text-[#F7F9FA]'
+                }`}
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>AI Career Coach</span>
+              </button>
+            </nav>
+            <div className="p-4 border-t border-[#1E262F] flex items-center justify-between bg-[#0B0F12]/20">
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#FFD369] animate-pulse" />
+                <span className="text-[10px] font-mono text-[#8A99A5]">Portfolio Status: ACTIVE</span>
+              </div>
+              <button
+                onClick={() => { setCurrentView('gateway'); setIsMobileMenuOpen(false); }}
+                className="px-4 py-1.5 bg-[#1E262F] hover:bg-[#FF5252] hover:text-[#F7F9FA] text-[#8A99A5] font-bold rounded-lg text-xs transition-all"
+              >
+                Exit Workspace
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Desktop Navigation Panel (hidden on mobile) */}
+      <aside className="hidden md:flex w-64 bg-[#161B22] border-r border-[#1E262F] flex-col justify-between flex-shrink-0 min-h-screen">
         <div className="p-6 space-y-8">
           <BrandLogo />
           
